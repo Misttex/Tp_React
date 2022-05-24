@@ -83,7 +83,6 @@ export default function App() {
         var time = date + ' ' + month + ' ' + year;
         return time;
     }
-    console.log(timeConverter(0));
 
     let text = <ActivityIndicator />;
 
