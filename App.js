@@ -7,11 +7,12 @@ import {
     View,
     SafeAreaView,
     Alert,
-    TextInput,
     TouchableOpacity,
     Modal, Pressable
 } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import {useEffect, useState} from "react";
+import {createNativeStackNavigator} from "react-native-screens/native-stack";
 
 export default function App() {
 
@@ -28,6 +29,39 @@ export default function App() {
             )
     }
 
+    function HomeScreen({navigation}) {
+        const Item = ({title}) => (
+            <View>
+                <Stack.Screen name="Description" component={DescriptionScreen} />
+                <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Description')}>
+                    <Image style={styles.tinyLogo} source={{uri: title.strDrinkThumb}}/>
+                    <Text style={styles.title}>{title.strDrink}</Text>
+                </TouchableOpacity>
+            </View>
+        );
+
+        const renderItem = ({item}) => (
+            <TouchableOpacity><Item title={item} /></TouchableOpacity>
+        );
+
+        return (
+            <SafeAreaView style={styles.container}>
+                <FlatList  numColumns={2} data={coktail} renderItem={renderItem}/>
+            </SafeAreaView>
+        );
+    }
+
+    function DescriptionScreen() {
+        return (
+            <SafeAreaView style={styles.container}>
+                <View style={styles.itemDescription}>
+
+                </View>
+            </SafeAreaView>
+        );
+    }
+    const Stack = createNativeStackNavigator();
+
     useEffect(() => {
 
         (async () => {
@@ -36,48 +70,23 @@ export default function App() {
 
     }, []);
 
-    const Item = ({title}) => (
-        <View style={styles.item}>
-            <Image style={styles.tinyLogo} source={{uri: title.strDrinkThumb}}/>
-            <Text style={styles.title}>{title.strDrink}</Text>
-        </View>
-    );
-    const renderItem = ({ item }) => (
-        <TouchableOpacity onPress={() => setModalVisible(true)} ><Item title={item} /></TouchableOpacity>
-    );
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                    Alert.alert("Modal has been closed.");
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalText}>Hello World!</Text>
-                        <Pressable
-                            style={[styles.button, styles.buttonClose]}
-                            onPress={() => setModalVisible(!modalVisible)}
-                        >
-                            <Text style={styles.textStyle}>Hide Modal</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </Modal>
-            <FlatList  numColumns={2} data={coktail} renderItem={renderItem}/>
-        </SafeAreaView>
+
+    return (/*
+        */
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="Description" component={DescriptionScreen} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#2F003E',
+        backgroundColor: '#1773F0',
         color:'black',
         alignItems: 'center',
         justifyContent: 'center',
@@ -97,6 +106,11 @@ const styles = StyleSheet.create({
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,
+        borderRadius: 10,
+    },
+    itemDescription: {
+        backgroundColor: '#D0CAB5',
+        padding: 170,
         borderRadius: 10,
     },
     centeredView: {
